@@ -11,77 +11,76 @@ using StudentAdminPortal.API.Repositories;
 using System.IO;
 using FluentValidation.AspNetCore;
 
-namespace StudentAdminPortal.API
+namespace StudentAdminPortal.API;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        Configuration = configuration;
+    }
 
-        public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddCors((options) =>
         {
-            services.AddCors((options) =>
+            options.AddPolicy("angularApplication", (builder) =>
             {
-                options.AddPolicy("angularApplication", (builder) =>
-                {
-                    builder.WithOrigins("http://localhost:4200")
+                builder.WithOrigins("http://localhost:4200")
                     .AllowAnyHeader()
                     .WithMethods("GET", "POST", "PUT", "DELETE")
                     .WithExposedHeaders("*");
-                });
             });
+        });
 
-            services.AddControllers();
+        services.AddControllers();
 
-            services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+        services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            services.AddDbContext<StudentAdminContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("StudentAdminPortalDb")));
+        services.AddDbContext<StudentAdminContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("StudentAdminPortalDb")));
 
-            services.AddScoped<IStudentRepository, SqlStudentRepository>();
-            services.AddScoped<IImageRepository, LocalStorageImageRepository>();
+        services.AddScoped<IStudentRepository, SqlStudentRepository>();
+        services.AddScoped<IImageRepository, LocalStorageImageRepository>();
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentAdminPortal.API", Version = "v1" });
-            });
-
-            services.AddAutoMapper(typeof(Startup).Assembly);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        services.AddSwaggerGen(c =>
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StudentAdminPortal.API v1"));
-            }
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentAdminPortal.API", Version = "v1" });
+        });
 
-            app.UseHttpsRedirection();
+        services.AddAutoMapper(typeof(Startup).Assembly);
+    }
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Resources")),
-                RequestPath = "/Resources"
-            });
-
-            app.UseRouting();
-
-            app.UseCors("angularApplication");
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StudentAdminPortal.API v1"));
         }
+
+        app.UseHttpsRedirection();
+
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Resources")),
+            RequestPath = "/Resources"
+        });
+
+        app.UseRouting();
+
+        app.UseCors("angularApplication");
+
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }

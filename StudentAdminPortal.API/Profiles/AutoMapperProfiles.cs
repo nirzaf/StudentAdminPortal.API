@@ -2,26 +2,25 @@
 using StudentAdminPortal.API.DomainModels;
 using StudentAdminPortal.API.Profiles.AfterMaps;
 
-namespace StudentAdminPortal.API.Profiles
+namespace StudentAdminPortal.API.Profiles;
+
+public class AutoMapperProfiles: Profile
 {
-    public class AutoMapperProfiles: Profile
+    public AutoMapperProfiles()
     {
-        public AutoMapperProfiles()
-        {
-            CreateMap<DataModels.Student, Student>()
-                .ReverseMap();
+        CreateMap<DataModels.Student, Student>()
+            .ReverseMap();
 
-            CreateMap<DataModels.Gender, Gender>()
-                .ReverseMap();
+        CreateMap<DataModels.Gender, Gender>()
+            .ReverseMap();
 
-            CreateMap<DataModels.Address, Address>()
-                .ReverseMap();
+        CreateMap<DataModels.Address, Address>()
+            .ReverseMap();
 
-            CreateMap<UpdateStudentRequest, DataModels.Student>()
-                .AfterMap<UpdateStudentRequestAfterMap>();
+        CreateMap<UpdateStudentRequest, DataModels.Student>()
+            .AfterMap<UpdateStudentRequestAfterMap>();
 
-            CreateMap<AddStudentRequest, DataModels.Student>()
-                .AfterMap<AddStudentRequestAfterMap>();
-        }
+        CreateMap<AddStudentRequest, DataModels.Student>()
+            .AfterMap<AddStudentRequestAfterMap>();
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace StudentAdminPortal.API.DomainModels
+namespace StudentAdminPortal.API.DomainModels;
+
+public class Gender
 {
-    public class Gender
-    {
-        public Guid Id { get; set; }
-        public string Description { get; set; }
-    }
+    public Guid Id { get; set; }
+    public string Description { get; set; }
 }

@@ -2,19 +2,18 @@
 using StudentAdminPortal.API.DomainModels;
 using System;
 
-namespace StudentAdminPortal.API.Profiles.AfterMaps
+namespace StudentAdminPortal.API.Profiles.AfterMaps;
+
+public class AddStudentRequestAfterMap : IMappingAction<AddStudentRequest, DataModels.Student>
 {
-    public class AddStudentRequestAfterMap : IMappingAction<AddStudentRequest, DataModels.Student>
+    public void Process(AddStudentRequest source, DataModels.Student destination, ResolutionContext context)
     {
-        public void Process(AddStudentRequest source, DataModels.Student destination, ResolutionContext context)
+        destination.Id = Guid.NewGuid();
+        destination.Address = new DataModels.Address()
         {
-            destination.Id = Guid.NewGuid();
-            destination.Address = new DataModels.Address()
-            {
-                Id = Guid.NewGuid(),
-                PhysicalAddress = source.PhysicalAddress,
-                PostalAddress = source.PostalAddress
-            };
-        }
+            Id = Guid.NewGuid(),
+            PhysicalAddress = source.PhysicalAddress,
+            PostalAddress = source.PostalAddress
+        };
     }
 }

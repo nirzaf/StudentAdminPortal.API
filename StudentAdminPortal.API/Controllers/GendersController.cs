@@ -6,32 +6,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StudentAdminPortal.API.Controllers
+namespace StudentAdminPortal.API.Controllers;
+
+[ApiController]
+public class GendersController : Controller
 {
-    [ApiController]
-    public class GendersController : Controller
+    private readonly IStudentRepository studentRepository;
+    private readonly IMapper mapper;
+
+    public GendersController(IStudentRepository studentRepository, IMapper mapper)
     {
-        private readonly IStudentRepository studentRepository;
-        private readonly IMapper mapper;
+        this.studentRepository = studentRepository;
+        this.mapper = mapper;
+    }
 
-        public GendersController(IStudentRepository studentRepository, IMapper mapper)
+    [HttpGet]
+    [Route("[controller]")]
+    public async Task<IActionResult> GetAllGenders()
+    {
+        var genderList = await studentRepository.GetGendersAsync();
+
+        if(genderList == null || !genderList.Any())
         {
-            this.studentRepository = studentRepository;
-            this.mapper = mapper;
+            return NotFound();
         }
 
-        [HttpGet]
-        [Route("[controller]")]
-        public async Task<IActionResult> GetAllGenders()
-        {
-            var genderList = await studentRepository.GetGendersAsync();
-
-            if(genderList == null || !genderList.Any())
-            {
-                return NotFound();
-            }
-
-            return Ok(mapper.Map<List<Gender>>(genderList));
-        }
+        return Ok(mapper.Map<List<Gender>>(genderList));
     }
 }
