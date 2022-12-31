@@ -22,12 +22,7 @@ namespace StudentAdminPortal.API.Validators
                 var gender = studentRepository.GetGendersAsync().Result.ToList()
                 .FirstOrDefault(x => x.Id == id);
 
-                if (gender != null)
-                {
-                    return true;
-                }
-
-                return false;
+                return gender != null;
             }).WithMessage("Please select a valid Gender");
             RuleFor(x => x.PhysicalAddress).NotEmpty();
             RuleFor(x => x.PostalAddress).NotEmpty();
